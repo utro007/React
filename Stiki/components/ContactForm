@@ -1,0 +1,26 @@
+export default function ContactForm({ onSaved, onCancel }: { onSaved: () => void; onCancel: () => void }) {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.currentTarget));
+
+    if (Object.values(body).some(v => !v)) return alert("Izpolni vsa polja!");
+
+    fetch("http://localhost:3000/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(r => r.ok ? onSaved() : alert("Napaka!"));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Dodaj stik</h2>
+      <input name="name" placeholder="Ime in priimek" />
+      <input name="phone" placeholder="Telefonska številka" />
+      <div>
+        <button type="button" onClick={onCancel}>Prekliči</button>
+        <button type="submit">Shrani</button>
+      </div>
+    </form>
+  );
+}
